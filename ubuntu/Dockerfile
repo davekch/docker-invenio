@@ -47,15 +47,16 @@ RUN apt update && apt install -y \
         libxmlsec1-dev
 
 
+# `python3-packaging` is installed and it causes issues with `pip` installations
+RUN apt remove python3-packaging -y
+
 # Symlink Python
 RUN ln -sfn /usr/bin/${PYTHON} /usr/bin/python
-# `python3-packaging` is installed by `yum` and it causes issues with `pip` installations
-# RUN yum remove python3-packaging -y
 
 # install pip for ${PYTHON}
 RUN wget https://bootstrap.pypa.io/get-pip.py -O get-pip.py && \
     python get-pip.py
-RUN python -m pip install --upgrade pip pipenv wheel
+RUN python -m pip install --upgrade pip pipenv wheel setuptools
 
 # Install Node.js v16
 RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
