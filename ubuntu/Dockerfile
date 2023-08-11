@@ -10,6 +10,8 @@ ARG LINUX_VERSION=22.04
 ARG BUILDPLATFORM=linux/amd64
 FROM --platform=$BUILDPLATFORM ubuntu:${LINUX_VERSION}
 
+ARG PYTHON=python3.9
+
 RUN apt update && apt upgrade -y && \
     apt install -y \
         git \
@@ -27,9 +29,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN add-apt-repository ppa:deadsnakes/ppa -y
 RUN apt update && apt install -y \
-        python3.9 \
-        python3.9-dev \
-        python3.9-distutils \
+        ${PYTHON} \ 
+        ${PYTHON}-dev \
+        ${PYTHON}-distutils \
         libcairo2-dev \
         fonts-dejavu \
         libffi-dev \
@@ -45,7 +47,7 @@ RUN apt update && apt install -y \
 
 
 # Symlink Python
-RUN ln -sfn /usr/bin/python3.9 /usr/bin/python
+RUN ln -sfn /usr/bin/${PYTHON} /usr/bin/python
 # `python3-packaging` is installed by `yum` and it causes issues with `pip` installations
 # RUN yum remove python3-packaging -y
 RUN pip3 install --upgrade pip pipenv wheel
