@@ -15,6 +15,7 @@ ARG PYTHON=python3.9
 RUN apt update && apt upgrade -y && \
     apt install -y \
         git \
+        wget \
         build-essential \
         software-properties-common \
         locales locales-all
@@ -50,7 +51,11 @@ RUN apt update && apt install -y \
 RUN ln -sfn /usr/bin/${PYTHON} /usr/bin/python
 # `python3-packaging` is installed by `yum` and it causes issues with `pip` installations
 # RUN yum remove python3-packaging -y
-RUN pip3 install --upgrade pip pipenv wheel
+
+# install pip for ${PYTHON}
+RUN wget https://bootstrap.pypa.io/get-pip.py -O get-pip.py && \
+    python get-pip.py
+RUN python -m pip install --upgrade pip pipenv wheel
 
 # Install Node.js v16
 RUN curl -fsSL https://rpm.nodesource.com/setup_16.x | bash - && \
